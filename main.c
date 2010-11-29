@@ -101,22 +101,37 @@ get_frames (int *frame_count)
   return frames;
 }
 
-int
-main (int argc, char **argv)
+static int
+select_frame (void)
 {
   int x, y, count, i;
   Frame **frames;
-  if (get_pointer_coords (&x, &y))
-    printf ("Mouse coords: %d, %d\n", x, y);
+  if (!get_pointer_coords (&x, &y))
+    return 0;
+  if ((frames = get_frames (&count)) == NULL)
+    return 0;
 
-  if ((frames = get_frames (&count)) != NULL)
-    for (i = 0; i < count; i++)
-      printf ("number: %d, x: %d, y: %d, width: %d, height: %d\n",
-              frames[i]->number,
-              frames[i]->x, frames[i]->y,
-              frames[i]->width, frames[i]->height);
+  for (i = 0; i < count; i++)
+    {
+      if (x > frames[i]->x && x < frames[i]->x + frames[i]->width &&
+          y > frames[i]->y && y < frames[i]->y + frames[i]->height)
+        {
+          char cmd[128];
+          sprintf (cmd, RATPOISON " -c \"fselect %d\"", frames[i]->number);
+          system (cmd);
+          break;
+        }
+    }
+
   for (i = 0; i < count; i++)
     free (frames[i]);
   free (frames);
+  return 1;
+}
+
+int
+main (int argc, char **argv)
+{
+  select_frame ();
   return 0;
 }
