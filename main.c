@@ -31,6 +31,8 @@ get_pointer_coords (int *x, int *y)
                  &event.xbutton.state);
   *x = event.xbutton.x;
   *y = event.xbutton.y;
+
+  XCloseDisplay (display);
   return 1;
 }
 
@@ -109,5 +111,8 @@ main (int argc, char **argv)
       printf ("x: %d, y: %d, width: %d, height: %d\n",
               frames[i]->x, frames[i]->y,
               frames[i]->width, frames[i]->height);
+  for (i = 0; i < count; i++)
+    free (frames[i]);
+  free (frames);
   return 0;
 }
