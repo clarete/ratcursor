@@ -1,0 +1,24 @@
+This is a simple program to discover where's the mouse cursor and select
+the frame above it.
+
+To make it work, download ratcursor (I guess you have already did it if
+you're reading it). compile it with a simple `make'.
+
+After that, install xbindkeys and add the following lines to the
+~/.xbindkeysrc config file:
+
+  "ratcursor"
+    Control + b:1
+
+After that, just start xbindkeys and be happy. Hold Control and click to
+select a ratpoison frame. :)
+
+This program was heavly based on the clickframe.pl script by Shawn
+Betts. I've wrote ratcursor because of two reasons:
+
+ * I didn't know `ratpoison -c ratinfo'
+ * I was needing to write some cool program in C to make my day better
+
+
+
+                                                  -- lincoln@comum.org
