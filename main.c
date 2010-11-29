@@ -7,6 +7,7 @@
 #define RATPOISON "/usr/bin/ratpoison"
 
 typedef struct {
+  int number;
   int x;
   int y;
   int width;
@@ -69,7 +70,9 @@ get_frames (int *frame_count)
       frame = malloc (sizeof (Frame));
       while ((piece = strtok_r (NULL, " ", &saveptr2)) != NULL)
         {
-          if (strcmp (piece, ":x") == 0)
+          if (strcmp (piece, ":number") == 0)
+            frame->number = atoi (strtok_r (NULL, " ", &saveptr2));
+          else if (strcmp (piece, ":x") == 0)
             frame->x = atoi (strtok_r (NULL, " ", &saveptr2));
           else if (strcmp (piece, ":y") == 0)
             frame->y = atoi (strtok_r (NULL, " ", &saveptr2));
@@ -108,7 +111,8 @@ main (int argc, char **argv)
 
   if ((frames = get_frames (&count)) != NULL)
     for (i = 0; i < count; i++)
-      printf ("x: %d, y: %d, width: %d, height: %d\n",
+      printf ("number: %d, x: %d, y: %d, width: %d, height: %d\n",
+              frames[i]->number,
               frames[i]->x, frames[i]->y,
               frames[i]->width, frames[i]->height);
   for (i = 0; i < count; i++)
