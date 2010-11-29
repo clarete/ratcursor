@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <X11/X.h>
+#include <X11/Xlib.h>
 
 #define RATPOISON "/usr/bin/ratpoison"
 
@@ -10,6 +12,27 @@ typedef struct {
   int width;
   int height;
 } Frame;
+
+static int
+get_pointer_coords (int *x, int *y)
+{
+  Display *display;
+  XEvent event;
+  int screen;
+
+  if (!(display = XOpenDisplay (NULL)))
+    return 0;
+
+  screen = DefaultScreen (display);
+  XQueryPointer (display, RootWindow (display, screen),
+                 &event.xbutton.root, &event.xbutton.window,
+                 &event.xbutton.x_root, &event.xbutton.y_root,
+                 &event.xbutton.x, &event.xbutton.y,
+                 &event.xbutton.state);
+  *x = event.xbutton.x;
+  *y = event.xbutton.y;
+  return 1;
+}
 
 static Frame **
 get_frames (int *frame_count)
@@ -76,8 +99,10 @@ get_frames (int *frame_count)
 int
 main (int argc, char **argv)
 {
-  int i, count;
+  int x, y, count, i;
   Frame **frames;
+  if (get_pointer_coords (&x, &y))
+    printf ("Mouse coords: %d, %d\n", x, y);
 
   if ((frames = get_frames (&count)) != NULL)
     for (i = 0; i < count; i++)
